@@ -10,6 +10,9 @@ contract Certificate is ERC721, Ownable {
     // Mapping to store additional information for each certificate
     mapping(uint256 => CertificateInfo) private certificateInfoMapping;
 
+    // Mapping to check if a certificate with a given name and wallet address has been issued
+    mapping(string => mapping(address => bool)) private issuedCertificates;
+
     struct CertificateInfo {
         string userName;
         string surName;
@@ -20,18 +23,25 @@ contract Certificate is ERC721, Ownable {
     constructor() ERC721("Certificate", "CERT") Ownable(msg.sender) {}
 
     function mintCertificate(
-        address recipient,
+        uint256 certificateId,
         string memory userName,
         string memory surName,
         string memory email,
         string memory companyName
-    ) external onlyOwner {
-        uint256 tokenId = nextCertificateId;
-        _safeMint(recipient, tokenId);
-        nextCertificateId++;
+    ) external {
+        // Check if the certificate with the given ID has already been issued
+        require(!issuedCertificates[userName][msg.sender], "Certificate already issued");
+
+        _safeMint(msg.sender, certificateId);
 
         // Store additional information using a mapping
-        _storeCertificateInfo(tokenId, userName, surName, email, companyName);
+        _storeCertificateInfo(certificateId, userName, surName, email, companyName);
+
+        // Mark the certificate as issued
+        issuedCertificates[userName][msg.sender] = true;
+
+        // Update the nextCertificateId only if the mint is successful
+        nextCertificateId = certificateId + 1;
     }
 
     function _storeCertificateInfo(
