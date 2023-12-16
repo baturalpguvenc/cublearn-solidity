@@ -27,7 +27,12 @@ contract CubLearn is Ownable {
         coursePrices["1"] = 300;
         coursePrices["2"] = 500;
         coursePrices["3"] = 200;
-        cashbackPercentage = 50;
+        coursePrices["4"] = 150;
+        coursePrices["5"] = 250;
+        coursePrices["6"] = 250;
+        coursePrices["7"] = 450;
+        
+		cashbackPercentage = 50;
 	}
 
 	function setCashbackPercentage(uint256 newValue) external onlyOwner {
