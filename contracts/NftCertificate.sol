@@ -48,15 +48,15 @@ contract NftCertificate is ERC721 {
 		});
 	}
 
-	function getCertificateInfo(uint256 tokenId)
-		external
-		view
-		returns (
-			CertificateInfo memory certInfo
-		)
-	{
-		return certificateInfoMapping[tokenId];
-	}
+	// function getCertificateInfo(uint256 tokenId)
+	// 	external
+	// 	view
+	// 	returns (
+	// 		CertificateInfo memory certInfo
+	// 	)
+	// {
+	// 	return certificateInfoMapping[tokenId];
+	// }
 
 	function _getSvg(uint256 tokenId) internal view returns (string memory) {
 		CertificateInfo storage certInfo = certificateInfoMapping[tokenId];

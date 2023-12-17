@@ -24,19 +24,27 @@ contract CubLearn is Ownable {
 		dtlContract = DTLToken(dtlContractAddress);
 		cubcertContract = NftCertificate(cubcertContractAddress);
 
-        coursePrices["1"] = 300;
-        coursePrices["2"] = 500;
-        coursePrices["3"] = 200;
-        coursePrices["4"] = 150;
-        coursePrices["5"] = 250;
-        coursePrices["6"] = 250;
-        coursePrices["7"] = 450;
-        
+		coursePrices["1"] = 300;
+		coursePrices["2"] = 500;
+		coursePrices["3"] = 200;
+		coursePrices["4"] = 150;
+		coursePrices["5"] = 250;
+		coursePrices["6"] = 250;
+		coursePrices["7"] = 450;
+		
 		cashbackPercentage = 50;
 	}
 
+	function amIEnrolledInCourse(string courseId) external view returns (bool) {
+		return enrolledCourses[courseId][msg.sender];
+	}
+	
+	function didICompleteCourse(string courseId) external view returns (bool) {
+		return issuedCertificates[courseId][msg.sender];
+	}
+
 	function setCashbackPercentage(uint256 newValue) external onlyOwner {
-        require(newValue <= 100, "Cashback percentage cannot be more than 100.");
+		require(newValue <= 100, "Cashback percentage cannot be more than 100.");
 
 		cashbackPercentage = newValue;
 	}
@@ -46,7 +54,7 @@ contract CubLearn is Ownable {
 
 		dtlContract.transferFrom(msg.sender, address(this), coursePrices[courseId]);
 
-        enrolledCourses[courseId][msg.sender] = true;
+		enrolledCourses[courseId][msg.sender] = true;
 	}
 
 	function finishCourse(
@@ -63,9 +71,9 @@ contract CubLearn is Ownable {
 		// Mark the certificate as issued
 		issuedCertificates[courseId][msg.sender] = true;
 
-        // Cashback
-        uint256 cashbackAmount = coursePrices[courseId] * cashbackPercentage / 100;
-        dtlContract.transfer(msg.sender, cashbackAmount);
+		// Cashback
+		uint256 cashbackAmount = coursePrices[courseId] * cashbackPercentage / 100;
+		dtlContract.transfer(msg.sender, cashbackAmount);
 	}
 
 	function getDTLBalance() external view onlyOwner returns (uint256) {
